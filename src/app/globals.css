@@ -1,26 +1,187 @@
 @import "tailwindcss";
 
+@theme {
+  /* ===== NEXUS Color System: Global Tokens ===== */
+  --color-gray-0: #FFFFFF;
+  --color-gray-5: #FAFAFA;
+  --color-gray-10: #F5F5F5;
+  --color-gray-20: #E5E5E5;
+  --color-gray-30: #D4D4D4;
+  --color-gray-40: #A3A3A3;
+  --color-gray-50: #737373;
+  --color-gray-60: #525252;
+  --color-gray-70: #404040;
+  --color-gray-80: #262626;
+  --color-gray-90: #171717;
+  --color-gray-100: #000000;
+
+  --color-red-0: #FFFFFF;
+  --color-red-5: #FFF3F6;
+  --color-red-10: #FFE6EC;
+  --color-red-20: #F6C3CF;
+  --color-red-30: #DD6F89;
+  --color-red-40: #CC264E;
+  --color-red-50: #C3002F;
+  --color-red-60: #9D0025;
+  --color-red-70: #77001B;
+  --color-red-80: #510012;
+  --color-red-90: #2B0009;
+  --color-red-100: #000000;
+
+  --color-blue-0: #FFFFFF;
+  --color-blue-5: #EDF4FF;
+  --color-blue-10: #E2EDFF;
+  --color-blue-20: #C6DAF9;
+  --color-blue-30: #7FA7E7;
+  --color-blue-40: #3B72CA;
+  --color-blue-50: #2C5597;
+  --color-blue-60: #1F3F7B;
+  --color-blue-70: #1B3566;
+  --color-blue-80: #192F56;
+  --color-blue-90: #182748;
+  --color-blue-100: #000000;
+
+  --color-green-0: #FFFFFF;
+  --color-green-5: #F2FBF3;
+  --color-green-10: #E1F7E5;
+  --color-green-20: #C5EDCC;
+  --color-green-30: #97DEA5;
+  --color-green-40: #63C576;
+  --color-green-50: #3DAA52;
+  --color-green-60: #2D8C3F;
+  --color-green-70: #276E35;
+  --color-green-80: #23582E;
+  --color-green-90: #1E4927;
+  --color-green-100: #000000;
+
+  --color-orange-0: #FFFFFF;
+  --color-orange-5: #FFF5ED;
+  --color-orange-10: #FFE8D5;
+  --color-orange-20: #FECEAA;
+  --color-orange-30: #FCAB75;
+  --color-orange-40: #FA7E3D;
+  --color-orange-50: #F85813;
+  --color-orange-60: #E9400D;
+  --color-orange-70: #C12D0D;
+  --color-orange-80: #992513;
+  --color-orange-90: #7C2212;
+  --color-orange-100: #000000;
+
+  --color-yellow-0: #FFFFFF;
+  --color-yellow-5: #FEFCE8;
+  --color-yellow-10: #FFFDC1;
+  --color-yellow-20: #FEF08A;
+  --color-yellow-30: #FDE047;
+  --color-yellow-40: #FACC15;
+  --color-yellow-50: #EAB308;
+  --color-yellow-60: #CA8A04;
+  --color-yellow-70: #A16207;
+  --color-yellow-80: #854D0E;
+  --color-yellow-90: #422006;
+  --color-yellow-100: #000000;
+
+  --font-body: "Nissan Pro", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+  --font-brand: "Nissan Brand", "Hiragino Sans", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+  --font-sans: var(--font-body);
+
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-md: 1rem;
+  --text-md--line-height: 1.5rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.875rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.75rem;
+  --text-3xl--line-height: 2.5rem;
+}
+
+/* ===== Light scope (default) — Semantic Tokens ===== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-default: var(--color-gray-0);
+  --bg-subtle: var(--color-gray-5);
+  --bg-muted: var(--color-gray-10);
+  --bg-emphasized: var(--color-gray-20);
+  --bg-inverted: var(--color-gray-100);
+
+  --text-primary: var(--color-gray-90);
+  --text-secondary: var(--color-gray-70);
+  --text-tertiary: var(--color-gray-50);
+  --text-quaternary: var(--color-gray-40);
+  --text-contrast: var(--color-gray-0);
+  --text-error: var(--color-red-50);
+
+  --border-default: var(--color-gray-20);
+  --border-light: var(--color-gray-10);
+  --border-strong: var(--color-gray-40);
+  --border-interactive: var(--color-gray-90);
+  --border-error: var(--color-red-50);
+
+  --red-solid: var(--color-red-50);
+  --red-subtle: var(--color-red-10);
+  --red-muted: var(--color-red-20);
+  --red-emphasized: var(--color-red-60);
+  --red-strong: var(--color-red-80);
+
+  --blue-solid: var(--color-blue-40);
+  --blue-subtle: var(--color-blue-10);
+  --blue-muted: var(--color-blue-20);
+  --blue-emphasized: var(--color-blue-70);
+  --blue-strong: var(--color-blue-90);
+
+  --green-solid: var(--color-green-60);
+  --green-subtle: var(--color-green-10);
+  --green-muted: var(--color-green-20);
+  --green-emphasized: var(--color-green-80);
+  --green-strong: var(--color-green-90);
+
+  --orange-solid: var(--color-orange-50);
+  --orange-subtle: var(--color-orange-10);
+  --orange-muted: var(--color-orange-20);
+  --orange-emphasized: var(--color-orange-70);
+  --orange-strong: var(--color-orange-90);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Scoped DARK panel (sidebar / preview): override semantic tokens */
+.theme-dark {
+  --bg-default: var(--color-gray-100);
+  --bg-subtle: var(--color-gray-90);
+  --bg-muted: var(--color-gray-80);
+  --bg-emphasized: var(--color-gray-80);
+  --bg-inverted: var(--color-gray-0);
+
+  --text-primary: var(--color-gray-5);
+  --text-secondary: var(--color-gray-30);
+  --text-tertiary: var(--color-gray-40);
+  --text-quaternary: var(--color-gray-50);
+  --text-contrast: var(--color-gray-100);
+
+  --border-default: var(--color-gray-80);
+  --border-light: var(--color-gray-90);
+  --border-strong: var(--color-gray-50);
+  --border-interactive: var(--color-gray-30);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  background: var(--bg-default);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  line-height: var(--text-md--line-height);
+  letter-spacing: 0.01em;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-30) transparent;
+}
+
+.theme-dark * {
+  scrollbar-color: var(--color-gray-70) transparent;
 }
