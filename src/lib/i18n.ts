@@ -10,11 +10,27 @@ const DICT: Dict = {
   preview: { ja: "プレビュー", en: "Preview" },
   insertImageTitle: { ja: "挿入画像", en: "Insert image" },
   insertImageHint: {
-    ja: "画像をアップロードし、台本のどの段落の後ろに表示するかを選択します",
-    en: "Upload an image and select after which paragraph it should appear",
+    ja: "画像をアップロードし、台本のどの文の後に表示するか手入力で指定します。",
+    en: "Upload an image and type which sentence it should appear after.",
   },
   addImage: { ja: "画像を追加", en: "Add image" },
-  insertAfter: { ja: "挿入位置（この段落の後）", en: "Insert after (this paragraph)" },
+  insertAfter: { ja: "挿入位置（この文の後）", en: "Insert after (this sentence)" },
+  insertAfterLabel: {
+    ja: "この文の後に挿入",
+    en: "Insert after this text",
+  },
+  insertAfterPlaceholder: {
+    ja: "例: 電動化の加速。",
+    en: "e.g. accelerated electrification;",
+  },
+  insertAfterNotFound: {
+    ja: "台本に一致する文が見つかりません。台本からそのままコピーしてください。",
+    en: "No matching text in the script. Copy it verbatim from the script above.",
+  },
+  insertAtStart: {
+    ja: "未入力の場合は冒頭に挿入されます。",
+    en: "Leave empty to insert at the start of the video.",
+  },
   videoBeingGenerated: { ja: "動画を生成中...", en: "Generating video..." },
   videoReady: { ja: "動画準備完了", en: "Video ready" },
   noVideoYet: { ja: "まだ動画は生成されていません", en: "No video generated yet" },

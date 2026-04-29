@@ -12,7 +12,9 @@ import type { AvatarOption, Conversation, Message } from "@/types";
 type ImageCue = {
   id: string;
   fileName: string;
-  afterParaIndex: number;
+  // Free-text snippet from the script. The image is inserted right after the
+  // first occurrence of this text. Empty string = beginning of the video.
+  afterText: string;
 };
 
 export function VideoGenForm({
@@ -54,16 +56,13 @@ export function VideoGenForm({
 
   const noAvatarAccess = !avatarsQ.isLoading && avatars.length === 0;
 
-  // Split script by blank-line into paragraphs (for image cues)
-  const paragraphs = script.split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
-
   function addImage(file: File) {
     setImageCues((arr) => [
       ...arr,
       {
         id: `ic-${Math.random().toString(36).slice(2, 8)}`,
         fileName: file.name,
-        afterParaIndex: Math.max(0, Math.min(paragraphs.length - 1, 0)),
+        afterText: "",
       },
     ]);
   }
@@ -74,6 +73,11 @@ export function VideoGenForm({
 
   function removeCue(id: string) {
     setImageCues((arr) => arr.filter((c) => c.id !== id));
+  }
+
+  function cueMatches(c: ImageCue): boolean {
+    if (!c.afterText.trim()) return true;
+    return script.includes(c.afterText.trim());
   }
 
   async function handleGenerate() {
@@ -97,10 +101,16 @@ export function VideoGenForm({
           ? "\n" +
             (locale === "ja" ? "挿入画像: " : "Inserted images: ") +
             imageCues
-              .map(
-                (c) =>
-                  `${c.fileName} → ${(locale === "ja" ? "段落" : "para")} ${c.afterParaIndex + 1} ${locale === "ja" ? "の後" : "after"}`
-              )
+              .map((c) => {
+                const where = c.afterText.trim()
+                  ? `${(locale === "ja" ? "「" : '"')}${c.afterText.slice(0, 30)}${
+                      c.afterText.length > 30 ? "…" : ""
+                    }${(locale === "ja" ? "」の後" : '" after')}`
+                  : locale === "ja"
+                  ? "冒頭"
+                  : "at start";
+                return `${c.fileName} → ${where}`;
+              })
               .join(", ")
           : "";
       await api.post<Partial<Message>, Message>(`/conversations/${cid}/messages`, {
@@ -276,38 +286,57 @@ export function VideoGenForm({
           <ImageIcon /> {t("addImage", locale)}
         </label>
         {imageCues.length > 0 && (
-          <div className="mt-2 space-y-1.5">
-            {imageCues.map((c) => (
-              <div
-                key={c.id}
-                className="flex items-center gap-2 px-2 py-1.5 rounded-md border bg-[var(--bg-subtle)] text-xs"
-                style={{ borderColor: "var(--border-default)" }}
-              >
-                <ImageIcon size={14} />
-                <span className="truncate flex-1">{c.fileName}</span>
-                <select
-                  value={c.afterParaIndex}
-                  onChange={(e) =>
-                    updateCue(c.id, { afterParaIndex: Number(e.target.value) })
-                  }
-                  className="h-7 px-1 rounded border text-xs bg-[var(--bg-default)] max-w-[160px]"
+          <div className="mt-2 space-y-2">
+            {imageCues.map((c) => {
+              const matched = cueMatches(c);
+              return (
+                <div
+                  key={c.id}
+                  className="rounded-md border bg-[var(--bg-subtle)] px-2 py-2"
                   style={{ borderColor: "var(--border-default)" }}
                 >
-                  {paragraphs.map((p, i) => (
-                    <option key={i} value={i}>
-                      {locale === "ja" ? "段落" : "Para"} {i + 1}: {p.slice(0, 24)}
-                      {p.length > 24 ? "..." : ""}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={() => removeCue(c.id)}
-                  className="text-[var(--text-tertiary)] hover:text-[var(--text-error)] px-1"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <ImageIcon size={14} />
+                    <span className="truncate flex-1 text-xs font-medium">
+                      {c.fileName}
+                    </span>
+                    <button
+                      onClick={() => removeCue(c.id)}
+                      aria-label={locale === "ja" ? "削除" : "Remove"}
+                      className="text-[var(--text-tertiary)] hover:text-[var(--text-error)] px-1"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <label className="block text-2xs uppercase tracking-wider text-[var(--text-tertiary)] mb-1">
+                    {t("insertAfterLabel", locale)}
+                  </label>
+                  <input
+                    type="text"
+                    value={c.afterText}
+                    onChange={(e) => updateCue(c.id, { afterText: e.target.value })}
+                    placeholder={t("insertAfterPlaceholder", locale)}
+                    className="w-full h-8 px-2.5 rounded border text-xs bg-[var(--bg-default)] focus:outline-none focus:border-[var(--text-primary)]"
+                    style={{
+                      borderColor: matched
+                        ? "var(--border-default)"
+                        : "var(--border-error)",
+                      color: "var(--text-primary)",
+                    }}
+                  />
+                  {!matched && (
+                    <p className="mt-1 text-2xs" style={{ color: "var(--text-error)" }}>
+                      {t("insertAfterNotFound", locale)}
+                    </p>
+                  )}
+                  {matched && c.afterText.trim() === "" && (
+                    <p className="mt-1 text-2xs text-[var(--text-tertiary)]">
+                      {t("insertAtStart", locale)}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
