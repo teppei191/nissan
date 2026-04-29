@@ -256,7 +256,7 @@ export function VideoGenForm({
         <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
           {t("insertImageTitle", locale)}
         </label>
-        <p className="text-[11px] text-[var(--text-tertiary)] mb-2">
+        <p className="text-xs text-[var(--text-tertiary)] mb-2">
           {t("insertImageHint", locale)}
         </p>
         <label
@@ -290,7 +290,7 @@ export function VideoGenForm({
                   onChange={(e) =>
                     updateCue(c.id, { afterParaIndex: Number(e.target.value) })
                   }
-                  className="h-7 px-1 rounded border text-[11px] bg-[var(--bg-default)] max-w-[160px]"
+                  className="h-7 px-1 rounded border text-xs bg-[var(--bg-default)] max-w-[160px]"
                   style={{ borderColor: "var(--border-default)" }}
                 >
                   {paragraphs.map((p, i) => (
@@ -321,7 +321,7 @@ export function VideoGenForm({
         {submitting ? t("generating", locale) : t("generate", locale)}
       </button>
 
-      <p className="text-[11px] text-[var(--text-tertiary)] leading-relaxed text-center">
+      <p className="text-xs text-[var(--text-tertiary)] leading-relaxed text-center">
         {t("refineHint", locale)}
       </p>
     </div>

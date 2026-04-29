@@ -37,7 +37,7 @@ export function Composer({
   return (
     <div
       className={cn(
-        "rounded-2xl border bg-[var(--bg-default)] shadow-sm transition-shadow focus-within:shadow-md",
+        "rounded-2xl border bg-[var(--bg-default)] shadow-sm transition-shadow focus-within:shadow-md focus-within:border-[var(--border-strong)]",
         variant === "centered" && "shadow-md"
       )}
       style={{ borderColor: "var(--border-default)" }}
@@ -76,7 +76,7 @@ export function Composer({
         rows={variant === "centered" ? 3 : 2}
         disabled={disabled}
         className={cn(
-          "w-full resize-none bg-transparent px-4 pt-3 pb-2 text-[15px] leading-6 text-[var(--text-primary)] placeholder:text-[var(--text-quaternary)] focus:outline-none"
+          "w-full resize-none bg-transparent px-4 pt-3 pb-2 text-sm leading-6 text-[var(--text-primary)] placeholder:text-[var(--text-quaternary)] focus:outline-none"
         )}
         style={{ fontFamily: "var(--font-body)" }}
       />
@@ -103,7 +103,7 @@ export function Composer({
             }}
           />
           {hint && (
-            <span className="text-[10px] text-[var(--text-tertiary)] hidden sm:inline ml-1">
+            <span className="text-2xs text-[var(--text-tertiary)] hidden sm:inline ml-1">
               {hint}
             </span>
           )}

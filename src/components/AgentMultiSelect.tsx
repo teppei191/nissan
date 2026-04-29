@@ -130,7 +130,7 @@ export function AgentMultiSelect({
     >
       {showAllShortcut && (
         <div
-          className="flex items-center justify-between px-2 py-1.5 border-b text-[11px]"
+          className="flex items-center justify-between px-2 py-1.5 border-b text-xs"
           style={{ borderColor: "var(--border-light)" }}
         >
           <button

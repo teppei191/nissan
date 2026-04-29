@@ -235,7 +235,7 @@ export default function KnowledgePage() {
             </table>
           </div>
         )}
-        <p className="mt-3 text-[11px] text-[var(--text-tertiary)] leading-relaxed">
+        <p className="mt-3 text-xs text-[var(--text-tertiary)] leading-relaxed">
           {t("autoExcludeNote", locale)}
         </p>
       </section>

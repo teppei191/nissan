@@ -157,7 +157,7 @@ export function Sidebar({
             <NexusLogo size={20} />
           </span>
           <span
-            className="font-semibold tracking-tight text-[13px] truncate"
+            className="font-semibold tracking-tight text-sm truncate"
             style={{ fontFamily: "var(--font-brand)" }}
           >
             {t("appName", locale)}
@@ -174,7 +174,7 @@ export function Sidebar({
 
       {/* Section: ホーム / New chat */}
       <div className="px-2 pb-2">
-        <div className="px-3 pt-1 pb-1.5 text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] font-medium">
+        <div className="px-3 pt-1 pb-1.5 text-2xs uppercase tracking-wider text-[var(--text-tertiary)] font-medium">
           {t("home", locale)}
         </div>
         <button
@@ -191,7 +191,7 @@ export function Sidebar({
 
       {/* Agents */}
       <div className="px-2 pt-1">
-        <div className="px-3 pb-1.5 text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] font-medium">
+        <div className="px-3 pb-1.5 text-2xs uppercase tracking-wider text-[var(--text-tertiary)] font-medium">
           {t("agents", locale)}
         </div>
         <nav className="space-y-0.5">
@@ -234,7 +234,7 @@ export function Sidebar({
 
       {/* Recent */}
       <div className="px-2 pt-4 flex-1 flex flex-col min-h-0">
-        <div className="px-3 pb-1.5 text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] font-medium shrink-0">
+        <div className="px-3 pb-1.5 text-2xs uppercase tracking-wider text-[var(--text-tertiary)] font-medium shrink-0">
           {t("recentChats", locale)}
         </div>
         <div className="flex-1 overflow-y-auto pr-1 space-y-0.5">
@@ -258,8 +258,8 @@ export function Sidebar({
                       : "text-[var(--text-secondary)] hover:bg-[var(--bg-muted)] hover:text-[var(--text-primary)]"
                   )}
                 >
-                  <span className="truncate text-[13px]">{c.title}</span>
-                  <span className="text-[10px] text-[var(--text-tertiary)] flex items-center gap-1.5">
+                  <span className="truncate text-sm">{c.title}</span>
+                  <span className="text-2xs text-[var(--text-tertiary)] flex items-center gap-1.5">
                     <span className="truncate">{a?.name ?? "Agent"}</span>
                     <span>·</span>
                     <span>{formatRelative(c.updatedAt)}</span>
@@ -306,11 +306,11 @@ export function Sidebar({
             <div className="text-xs font-medium truncate text-[var(--text-primary)]">
               {user?.name}
             </div>
-            <div className="text-[10px] text-[var(--text-tertiary)] truncate">
+            <div className="text-2xs text-[var(--text-tertiary)] truncate">
               {user?.department}
             </div>
           </div>
-          <span className="text-[10px] text-[var(--text-tertiary)]">{t("logout", locale)}</span>
+          <span className="text-2xs text-[var(--text-tertiary)]">{t("logout", locale)}</span>
         </button>
       </div>
     </aside>

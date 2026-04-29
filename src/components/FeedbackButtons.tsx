@@ -61,7 +61,7 @@ export function FeedbackButtons({
   if (fb) {
     return (
       <span
-        className="inline-flex items-center gap-1 text-[11px]"
+        className="inline-flex items-center gap-1 text-xs"
         style={{
           color:
             fb.type === "like" ? "var(--green-emphasized)" : "var(--orange-emphasized)",
@@ -124,7 +124,7 @@ export function FeedbackButtons({
                 setOpenDislike(false);
                 setComment("");
               }}
-              className="h-7 px-2 rounded text-[11px] hover:bg-[var(--bg-muted)] text-[var(--text-secondary)]"
+              className="h-7 px-2 rounded text-xs hover:bg-[var(--bg-muted)] text-[var(--text-secondary)]"
             >
               {t("cancel", locale)}
             </button>
@@ -132,7 +132,7 @@ export function FeedbackButtons({
               type="button"
               onClick={() => send("dislike", comment.trim() || undefined)}
               disabled={submitting || !comment.trim()}
-              className="h-7 px-2.5 rounded text-[11px] font-medium text-[var(--text-contrast)] disabled:opacity-50"
+              className="h-7 px-2.5 rounded text-xs font-medium text-[var(--text-contrast)] disabled:opacity-50"
               style={{ background: "var(--color-red-50)", fontFamily: "var(--font-brand)" }}
             >
               {submitting ? "..." : t("feedbackSubmit", locale)}

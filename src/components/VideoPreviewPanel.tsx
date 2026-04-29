@@ -39,7 +39,7 @@ export function VideoPreviewPanel({
         }}
       >
         <div className="px-5 pt-4 pb-3 flex items-center justify-between">
-          <div className="text-[11px] uppercase tracking-wider text-[var(--text-tertiary)] font-medium">
+          <div className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] font-medium">
             {t("preview", locale)}
           </div>
           {lastVideo && !submitting && (
@@ -143,7 +143,7 @@ function VideoStage({
                 height: 56,
               }}
             >
-              <span style={{ color: "#fff", marginLeft: 2 }}>
+              <span style={{ color: "var(--text-contrast)", marginLeft: 2 }}>
                 <PlayIcon size={26} />
               </span>
             </span>
@@ -222,7 +222,7 @@ function FullscreenPreview({
               className="rounded-full flex items-center justify-center transition-transform group-hover:scale-105"
               style={{ background: "var(--color-red-50)", width: 96, height: 96 }}
             >
-              <span style={{ color: "#fff", marginLeft: 4 }}>
+              <span style={{ color: "var(--text-contrast)", marginLeft: 4 }}>
                 <PlayIcon size={48} />
               </span>
             </span>

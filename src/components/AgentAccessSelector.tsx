@@ -118,7 +118,7 @@ export function AgentAccessSelector({
         }}
       >
         <div
-          className="px-3 py-2 border-b text-[11px] uppercase tracking-wide text-[var(--text-tertiary)]"
+          className="px-3 py-2 border-b text-xs uppercase tracking-wide text-[var(--text-tertiary)]"
           style={{ borderColor: "var(--border-light)" }}
         >
           {t("agentsColumn", locale)}
@@ -184,7 +184,7 @@ function PermSegment({
   ];
   return (
     <div
-      className="inline-flex rounded border overflow-hidden text-[11px]"
+      className="inline-flex rounded border overflow-hidden text-xs"
       style={{ borderColor: "var(--border-default)" }}
     >
       {opts.map((o, i) => {

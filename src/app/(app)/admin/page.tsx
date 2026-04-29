@@ -248,7 +248,7 @@ export default function AdminPage() {
                           handleUpdateUser(u, { disabled: !u.disabled })
                         }
                         disabled={u.id === user?.id}
-                        className="text-[10px] uppercase font-bold px-2 py-1 rounded disabled:opacity-50"
+                        className="text-2xs uppercase font-bold px-2 py-1 rounded disabled:opacity-50"
                         style={
                           u.disabled
                             ? {
@@ -313,7 +313,7 @@ function AgentAccessCell({
   if (user.role === "admin") {
     return (
       <span
-        className="inline-block text-[10px] uppercase font-bold px-2 py-1 rounded"
+        className="inline-block text-2xs uppercase font-bold px-2 py-1 rounded"
         style={{
           background: "var(--bg-emphasized)",
           color: "var(--text-secondary)",
@@ -378,7 +378,7 @@ function BulkGrantBar({
         borderColor: "var(--border-default)",
       }}
     >
-      <div className="text-[10px] uppercase tracking-wide text-[var(--text-tertiary)] mb-2 font-medium">
+      <div className="text-2xs uppercase tracking-wide text-[var(--text-tertiary)] mb-2 font-medium">
         {t("bulkGrantSimple", locale)}
       </div>
       <div className="flex flex-wrap items-end gap-2">
@@ -419,7 +419,7 @@ function BulkGrantBar({
           </span>
         )}
       </div>
-      <p className="mt-2 text-[11px] text-[var(--text-tertiary)]">
+      <p className="mt-2 text-xs text-[var(--text-tertiary)]">
         {t("bulkGrantViewerNote", locale)}
       </p>
     </div>
@@ -575,7 +575,7 @@ function AiSummaryCard({ items }: { items: FeedbackSummary["recent"] }) {
               <SparkleIcon size={14} />
             </span>
             <span
-              className="text-[10px] uppercase tracking-wider font-bold"
+              className="text-2xs uppercase tracking-wider font-bold"
               style={{ color: "var(--blue-emphasized)" }}
             >
               {t("aiSummaryBadge", locale)}
@@ -702,7 +702,7 @@ function CommentPopup({
       >
         <div className="flex items-start justify-between mb-3">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-[var(--text-tertiary)] mb-0.5">
+            <div className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-0.5">
               {t("feedbackDetail", locale)}
             </div>
             <h3 className="text-base font-bold" style={{ fontFamily: "var(--font-brand)" }}>
@@ -719,7 +719,7 @@ function CommentPopup({
         </div>
         <div className="space-y-3 text-sm">
           <div className="grid grid-cols-[88px_1fr] gap-3">
-            <div className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] pt-0.5">
+            <div className="text-2xs uppercase tracking-wider text-[var(--text-tertiary)] pt-0.5">
               {t("comment", locale)}
             </div>
             <div
@@ -739,7 +739,7 @@ function CommentPopup({
           </div>
           {entry.userPreview && (
             <div className="grid grid-cols-[88px_1fr] gap-3">
-              <div className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] pt-0.5">
+              <div className="text-2xs uppercase tracking-wider text-[var(--text-tertiary)] pt-0.5">
                 {locale === "ja" ? "対象の質問" : "User prompt"}
               </div>
               <div className="text-[var(--text-secondary)] text-xs">
@@ -748,7 +748,7 @@ function CommentPopup({
             </div>
           )}
           <div className="grid grid-cols-[88px_1fr] gap-3">
-            <div className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] pt-0.5">
+            <div className="text-2xs uppercase tracking-wider text-[var(--text-tertiary)] pt-0.5">
               {t("submittedAt", locale)}
             </div>
             <div className="text-[var(--text-secondary)] text-xs">
@@ -988,7 +988,7 @@ function DetailRow({
 }) {
   return (
     <div className="grid grid-cols-[100px_1fr] gap-3 items-start">
-      <div className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] pt-0.5">
+      <div className="text-2xs uppercase tracking-wider text-[var(--text-tertiary)] pt-0.5">
         {label}
       </div>
       <div className="min-w-0">{children}</div>
@@ -1185,7 +1185,7 @@ function CountTile({
       className="border rounded-lg px-3 py-2"
       style={{ background: styles.bg, borderColor: styles.border }}
     >
-      <div className="text-[10px] uppercase tracking-wide text-[var(--text-tertiary)] mb-0.5">
+      <div className="text-2xs uppercase tracking-wide text-[var(--text-tertiary)] mb-0.5">
         {label}
       </div>
       <div

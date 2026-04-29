@@ -22,7 +22,7 @@ export function ChatBubble({
     <div className={cn("flex gap-3", isUser ? "justify-end" : "justify-start")}>
       {!isUser && (
         <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-contrast)] text-[10px] font-bold shrink-0"
+          className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-contrast)] text-2xs font-bold shrink-0"
           style={{
             background: "linear-gradient(135deg, var(--color-red-50), var(--color-red-70))",
             fontFamily: "var(--font-brand)",
@@ -33,20 +33,20 @@ export function ChatBubble({
       )}
       <div className={cn("max-w-[78%] min-w-0", isUser && "text-right")}>
         {!isUser && (
-          <div className="text-[10px] text-[var(--text-tertiary)] mb-1">
+          <div className="text-2xs text-[var(--text-tertiary)] mb-1">
             AI {locale === "ja" ? "アシスタント" : "Assistant"}
           </div>
         )}
         <div
           className={cn(
-            "inline-block whitespace-pre-wrap text-left text-[15px] rounded-2xl px-4 py-2.5 border leading-relaxed"
+            "inline-block whitespace-pre-wrap text-left text-sm rounded-2xl px-4 py-2.5 border leading-relaxed"
           )}
           style={
             isUser
               ? {
-                  background: "var(--blue-emphasized)",
-                  borderColor: "var(--blue-emphasized)",
-                  color: "var(--text-contrast)",
+                  background: "var(--blue-subtle)",
+                  borderColor: "var(--blue-muted)",
+                  color: "var(--text-primary)",
                 }
               : {
                   background: "var(--bg-subtle)",
@@ -82,7 +82,7 @@ export function ChatBubble({
             {msg.attachments.map((f, i) => (
               <div
                 key={i}
-                className="text-[11px] px-2 py-1 rounded border bg-[var(--bg-default)]"
+                className="text-xs px-2 py-1 rounded border bg-[var(--bg-default)]"
                 style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}
               >
                 📎 {f.name}{" "}
@@ -132,7 +132,7 @@ export function ChatBubble({
               {conversationId && (
                 <FeedbackButtons conversationId={conversationId} message={msg} />
               )}
-              <span className="text-[10px] text-[var(--text-tertiary)] self-center">
+              <span className="text-2xs text-[var(--text-tertiary)] self-center">
                 <CopyButton text={msg.content} />
               </span>
             </div>
@@ -152,7 +152,7 @@ function CopyButton({ text }: { text: string }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="text-[10px] hover:text-[var(--text-secondary)]"
+      className="text-2xs hover:text-[var(--text-secondary)]"
     >
       {copied ? `✓ ${t("copied", locale)}` : t("copy", locale)}
     </button>
