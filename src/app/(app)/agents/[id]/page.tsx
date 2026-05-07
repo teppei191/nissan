@@ -11,7 +11,7 @@ import { ChatPanel } from "@/components/ChatPanel";
 import { VideoGenForm } from "@/components/VideoGenForm";
 import { VideoPreviewPanel } from "@/components/VideoPreviewPanel";
 import { ShareModal } from "@/components/ShareModal";
-import { BookIcon, LockIcon, PlusIcon, ShareIcon } from "@/components/icons";
+import { BookIcon, LockIcon, ShareIcon } from "@/components/icons";
 import type { Agent } from "@/types";
 
 export default function AgentDetailPage() {
@@ -57,18 +57,6 @@ export default function AgentDetailPage() {
         <div className="flex-1 min-w-0 overflow-y-auto">
           <div className="max-w-2xl mx-auto px-8 py-6">
             <div className="flex items-center justify-end gap-1.5 mb-4">
-              <button
-                onClick={() => {
-                  setActiveConvId(null);
-                  setPendingPreview(undefined);
-                  router.replace(`/agents/${agent.id}`);
-                }}
-                className="h-8 text-xs px-2.5 rounded-md border hover:bg-[var(--bg-muted)] flex items-center gap-1.5"
-                style={{ borderColor: "var(--border-default)" }}
-              >
-                <PlusIcon size={12} />
-                {t("newChat", locale)}
-              </button>
               {isOwnerOrAdmin && (
                 <Link
                   href={`/agents/${agent.id}/avatar-permissions`}
@@ -114,17 +102,6 @@ export default function AgentDetailPage() {
         className="px-5 py-3 border-b flex items-center justify-end gap-1.5"
         style={{ borderColor: "var(--border-default)" }}
       >
-        <button
-          onClick={() => {
-            setActiveConvId(null);
-            router.replace(`/agents/${agent.id}`);
-          }}
-          className="h-8 text-xs px-2.5 rounded-md border hover:bg-[var(--bg-muted)] flex items-center gap-1.5"
-          style={{ borderColor: "var(--border-default)" }}
-        >
-          <PlusIcon size={12} />
-          {t("newChat", locale)}
-        </button>
         {isOwnerOrAdmin && agent.hasKnowledgeBase && (
           <Link
             href={`/agents/${agent.id}/knowledge`}

@@ -5,9 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 import { useLocale } from "@/stores/locale";
 import { t } from "@/lib/i18n";
-import { ChevronIcon, SettingsIcon } from "@/components/icons";
+import { ChevronIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/stores/auth";
 import type { Agent } from "@/types";
 
 export function TopBar() {
@@ -16,7 +15,6 @@ export function TopBar() {
   const search = useSearchParams();
   const locale = useLocale((s) => s.locale);
   const setLocale = useLocale((s) => s.setLocale);
-  const user = useAuth((s) => s.user);
 
   const agentId = (params?.id as string) ?? null;
   const { data: agent } = useQuery({
@@ -105,15 +103,7 @@ export function TopBar() {
             </button>
           ))}
         </div>
-        {user?.role === "admin" && (
-          <Link
-            href="/admin"
-            aria-label={t("admin", locale)}
-            className="w-8 h-8 rounded-md flex items-center justify-center text-[var(--text-secondary)] hover:bg-[var(--bg-muted)]"
-          >
-            <SettingsIcon size={16} />
-          </Link>
-        )}
+        {/* TODO Q2: per-agent settings (temperature, system prompt) slot */}
       </div>
     </header>
   );
