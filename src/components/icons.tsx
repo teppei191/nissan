@@ -343,6 +343,28 @@ export function DownloadIcon({ size = 14 }: { size?: number }) {
   );
 }
 
+export function ShareIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <circle cx="6" cy="12" r="2.5" />
+      <circle cx="17" cy="6" r="2.5" />
+      <circle cx="17" cy="18" r="2.5" />
+      <path d="M8.2 11l6.7 -3.7" />
+      <path d="M8.2 13l6.7 3.7" />
+    </svg>
+  );
+}
+
 export function SparkleIcon({ size = 14 }: { size?: number }) {
   return (
     <svg

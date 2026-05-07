@@ -62,12 +62,6 @@ export default function AdminPage() {
     qc.invalidateQueries({ queryKey: ["agents"] });
   }
 
-  async function handleDeleteUser(id: string) {
-    if (!confirm(locale === "ja" ? "ユーザーを削除しますか？" : "Delete this user?")) return;
-    await api.del(`/users/${id}`);
-    qc.invalidateQueries({ queryKey: ["admin-users"] });
-  }
-
   async function handleAddUser(form: Omit<User, "id">) {
     await api.post<Omit<User, "id">, User>("/users", form);
     qc.invalidateQueries({ queryKey: ["admin-users"] });
@@ -185,7 +179,6 @@ export default function AdminPage() {
                   <th className="px-3 py-2 font-medium text-[var(--text-secondary)] w-28">
                     {t("status", locale)}
                   </th>
-                  <th className="px-3 py-2 w-12"></th>
                 </tr>
               </thead>
               <tbody>
@@ -260,18 +253,9 @@ export default function AdminPage() {
                                 color: "var(--green-emphasized)",
                               }
                         }
+                        title={u.disabled ? t("activate", locale) : t("inactivate", locale)}
                       >
-                        {u.disabled ? t("disabled", locale) : t("enabled", locale)}
-                      </button>
-                    </td>
-                    <td className="px-3 py-2">
-                      <button
-                        onClick={() => handleDeleteUser(u.id)}
-                        disabled={u.id === user?.id}
-                        className="text-xs hover:underline disabled:opacity-30"
-                        style={{ color: "var(--text-error)" }}
-                      >
-                        {t("delete", locale)}
+                        {u.disabled ? t("inactive", locale) : t("active", locale)}
                       </button>
                     </td>
                   </tr>
@@ -426,7 +410,7 @@ function BulkGrantBar({
   );
 }
 
-const CHATBOT_AGENT_ID = "a-ceo-chatbot";
+const DEFAULT_FEEDBACK_AGENT_ID = "a-ceo-chatbot";
 type MonthRange = 3 | 6 | 12;
 
 function FeedbackPanel({
@@ -439,8 +423,19 @@ function FeedbackPanel({
   const locale = useLocale((s) => s.locale);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [monthRange, setMonthRange] = useState<MonthRange>(6);
+  const [selectedAgentId, setSelectedAgentId] = useState<string>(DEFAULT_FEEDBACK_AGENT_ID);
 
-  const summary = summaries.find((s) => s.agentId === CHATBOT_AGENT_ID);
+  // Reset selection if the agent disappears from summaries
+  useEffect(() => {
+    if (
+      summaries.length > 0 &&
+      !summaries.some((s) => s.agentId === selectedAgentId)
+    ) {
+      setSelectedAgentId(summaries[0].agentId);
+    }
+  }, [summaries, selectedAgentId]);
+
+  const summary = summaries.find((s) => s.agentId === selectedAgentId);
 
   if (loading) return <div className="text-sm text-[var(--text-tertiary)]">...</div>;
   if (!summary) {
@@ -455,13 +450,37 @@ function FeedbackPanel({
 
   return (
     <div className="space-y-5">
-      <div>
-        <h2 className="text-sm font-bold" style={{ fontFamily: "var(--font-brand)" }}>
-          {t("chatbotFeedbackHeader", locale)}
-        </h2>
-        <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
-          {t("feedbackSummary", locale)}
-        </p>
+      <div className="flex items-end justify-between gap-3 flex-wrap">
+        <div>
+          <h2 className="text-sm font-bold" style={{ fontFamily: "var(--font-brand)" }}>
+            {summary.agentName}
+            <span className="text-[var(--text-tertiary)] ml-1 font-normal">
+              · {t("feedback", locale)}
+            </span>
+          </h2>
+          <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
+            {t("feedbackSummary", locale)}
+          </p>
+        </div>
+        {summaries.length > 1 && (
+          <div className="flex items-center gap-2">
+            <span className="text-2xs uppercase tracking-wide text-[var(--text-tertiary)]">
+              {t("filterByAgent", locale)}
+            </span>
+            <select
+              value={selectedAgentId}
+              onChange={(e) => setSelectedAgentId(e.target.value)}
+              className="h-9 px-2.5 rounded-md border text-sm bg-[var(--bg-default)]"
+              style={{ borderColor: "var(--border-default)" }}
+            >
+              {summaries.map((s) => (
+                <option key={s.agentId} value={s.agentId}>
+                  {s.agentName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       {/* Trend chart with month-range pill */}

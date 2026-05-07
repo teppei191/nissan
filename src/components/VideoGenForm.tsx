@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { api } from "@/lib/api-client";
+import { api, apiBase } from "@/lib/api-client";
 import { useAuth } from "@/stores/auth";
 import { useLocale } from "@/stores/locale";
 import { t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
-import { ImageIcon } from "@/components/icons";
+import { ImageIcon, StopIcon } from "@/components/icons";
 import type { AvatarOption, Conversation, Message } from "@/types";
 
 type ImageCue = {
@@ -49,6 +49,8 @@ export function VideoGenForm({
   const [avatarId, setAvatarId] = useState<string | null>(null);
   const [imageCues, setImageCues] = useState<ImageCue[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [cancelled, setCancelled] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (avatars.length > 0 && !avatarId) setAvatarId(avatars[0].id);
@@ -85,7 +87,10 @@ export function VideoGenForm({
     const avatar = avatars.find((a) => a.id === avatarId);
     if (!avatar) return;
     setSubmitting(true);
+    setCancelled(false);
     onPreview?.({ language, avatar: avatar.label, durationSec: 0, submitting: true });
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
     try {
       let cid = conversationId;
       if (!cid) {
@@ -122,20 +127,20 @@ export function VideoGenForm({
           `\n${t("language", locale)}: ${language === "ja" ? "日本語" : "English"} | ${t("executive", locale)}: ${avatar.label}` +
           cueSummary,
       });
-      await api.post<
-        {
-          conversationId: string;
-          script: string;
-          language: "ja" | "en";
-          avatar: string;
-        },
-        Message
-      >(`/agents/a-ceo-video/video`, {
-        conversationId: cid,
-        script,
-        language,
-        avatar: avatar.label,
+
+      // Use fetch directly so we can abort via signal
+      const res = await fetch(`${apiBase}/agents/a-ceo-video/video`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept-Language": locale },
+        body: JSON.stringify({
+          conversationId: cid,
+          script,
+          language,
+          avatar: avatar.label,
+        }),
+        signal: ctrl.signal,
       });
+      if (!res.ok) throw new Error(`API ${res.status}`);
       qc.invalidateQueries({ queryKey: ["conversation", cid] });
       qc.invalidateQueries({ queryKey: ["conversations"] });
       onPreview?.({
@@ -144,9 +149,22 @@ export function VideoGenForm({
         durationSec: Math.max(20, Math.min(120, script.length / 4)),
         submitting: false,
       });
+    } catch (e) {
+      const wasAbort = e instanceof Error && e.name === "AbortError";
+      if (wasAbort) {
+        setCancelled(true);
+        onPreview?.({ language, avatar: avatar.label, durationSec: 0, submitting: false });
+      } else {
+        onPreview?.({ language, avatar: avatar.label, durationSec: 0, submitting: false });
+      }
     } finally {
       setSubmitting(false);
+      abortRef.current = null;
     }
+  }
+
+  function handleStop() {
+    abortRef.current?.abort();
   }
 
   return (
@@ -341,14 +359,45 @@ export function VideoGenForm({
         )}
       </div>
 
-      <button
-        onClick={handleGenerate}
-        disabled={submitting || !script.trim() || !avatarId || noAvatarAccess}
-        className="h-11 w-full rounded-md text-sm font-medium text-[var(--text-contrast)] disabled:opacity-50"
-        style={{ background: "var(--color-red-50)", fontFamily: "var(--font-brand)" }}
-      >
-        {submitting ? t("generating", locale) : t("generate", locale)}
-      </button>
+      {submitting ? (
+        <button
+          onClick={handleStop}
+          className="h-11 w-full rounded-md text-sm font-medium border inline-flex items-center justify-center gap-2 hover:bg-[var(--bg-muted)]"
+          style={{
+            borderColor: "var(--border-default)",
+            color: "var(--text-primary)",
+            fontFamily: "var(--font-brand)",
+          }}
+        >
+          <StopIcon size={12} />
+          {t("stopGeneration", locale)}
+        </button>
+      ) : (
+        <button
+          onClick={() => {
+            setCancelled(false);
+            handleGenerate();
+          }}
+          disabled={!script.trim() || !avatarId || noAvatarAccess}
+          className="h-11 w-full rounded-md text-sm font-medium text-[var(--text-contrast)] disabled:opacity-50"
+          style={{ background: "var(--color-red-50)", fontFamily: "var(--font-brand)" }}
+        >
+          {t("generate", locale)}
+        </button>
+      )}
+
+      {cancelled && !submitting && (
+        <div
+          className="px-3 py-2 rounded-md border text-xs"
+          style={{
+            background: "var(--orange-subtle)",
+            borderColor: "var(--orange-muted)",
+            color: "var(--orange-strong)",
+          }}
+        >
+          {t("generationCancelled", locale)}
+        </div>
+      )}
 
       <p className="text-xs text-[var(--text-tertiary)] leading-relaxed text-center">
         {t("refineHint", locale)}

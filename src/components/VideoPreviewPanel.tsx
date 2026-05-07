@@ -5,6 +5,7 @@ import { api } from "@/lib/api-client";
 import { useLocale } from "@/stores/locale";
 import { t } from "@/lib/i18n";
 import { CloseIcon, DownloadIcon, MaximizeIcon, PlayIcon } from "@/components/icons";
+import { FeedbackButtons } from "@/components/FeedbackButtons";
 import type { Conversation, Message } from "@/types";
 
 export function VideoPreviewPanel({
@@ -87,6 +88,14 @@ export function VideoPreviewPanel({
                     <DownloadIcon size={14} />
                     {t("download", locale)}
                   </button>
+                  {conversationId && (
+                    <div className="mt-3 pt-3 border-t" style={{ borderColor: "var(--border-light)" }}>
+                      <FeedbackButtons
+                        conversationId={conversationId}
+                        message={lastVideo}
+                      />
+                    </div>
+                  )}
                 </>
               )}
             </>

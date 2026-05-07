@@ -1,7 +1,6 @@
 import { http, HttpResponse, delay } from "msw";
 import {
   agents,
-  agentsI18n,
   initialAgentAccess,
   departmentAccess,
   AVATARS,
@@ -215,6 +214,32 @@ const SYNTHETIC_FEEDBACK: SyntheticEntry[] = [
     userPreview: { ja: "原価構造の概要", en: "Overview of the cost structure" }, daysAgo: 340 },
   { agentId: "a-ceo-chatbot", type: "like",
     userPreview: { ja: "FY23 決算メッセージ", en: "FY23 earnings message" }, daysAgo: 360 },
+
+  // CEO Video — focused on script/voice/lip-sync quality
+  { agentId: "a-ceo-video", type: "like",
+    userPreview: { ja: "Q1 決算メッセージ動画 (日本語)", en: "Q1 earnings message video (Japanese)" }, daysAgo: 2 },
+  { agentId: "a-ceo-video", type: "like",
+    userPreview: { ja: "ESG レポート動画版", en: "ESG report (video version)" }, daysAgo: 6 },
+  { agentId: "a-ceo-video", type: "dislike",
+    comment: { ja: "アバターのリップシンクが台本後半でずれていた。", en: "Avatar lip-sync drifted toward the end of the script." },
+    userPreview: { ja: "Q1 決算メッセージ動画 (英語)", en: "Q1 earnings message video (English)" }, daysAgo: 9 },
+  { agentId: "a-ceo-video", type: "like",
+    userPreview: { ja: "新車種ローンチ社内告知", en: "Internal announcement for new model launch" }, daysAgo: 14 },
+  { agentId: "a-ceo-video", type: "dislike",
+    comment: { ja: "音声のトーンが想定より明るすぎた。落ち着いたトーンを選択肢に。", en: "Voice tone was too upbeat. Please add a calmer option." },
+    userPreview: { ja: "リコール対応の社内向け動画", en: "Internal video on recall response" }, daysAgo: 30 },
+  { agentId: "a-ceo-video", type: "like",
+    userPreview: { ja: "Investor Day オープニング", en: "Investor Day opening" }, daysAgo: 38 },
+  { agentId: "a-ceo-video", type: "dislike",
+    comment: { ja: "英語版の発音に違和感があり、ネイティブチェックが必要。", en: "English pronunciation was off; needs native review." },
+    userPreview: { ja: "ESG レポート動画 (英語)", en: "ESG report video (English)" }, daysAgo: 65 },
+  { agentId: "a-ceo-video", type: "like",
+    userPreview: { ja: "新中計発表動画", en: "New mid-term plan announcement video" }, daysAgo: 78 },
+  { agentId: "a-ceo-video", type: "dislike",
+    comment: { ja: "動画長が指定よりも短くなった。", en: "Output duration was shorter than specified." },
+    userPreview: { ja: "Q2 業績動画", en: "Q2 performance video" }, daysAgo: 122 },
+  { agentId: "a-ceo-video", type: "like",
+    userPreview: { ja: "EV 戦略動画版", en: "EV strategy (video version)" }, daysAgo: 145 },
 ];
 
 function ymKey(d: Date): string {
@@ -420,6 +445,27 @@ export const handlers = [
       avatars: id === "a-ceo-video" ? AVATARS : null,
       users: state.users,
     });
+  }),
+
+  // Share an agent with an existing user by email (admin-only flow in Q1)
+  http.post("/api/v1/agents/:id/share", async ({ request, params }) => {
+    const id = String(params.id);
+    const body = (await request.json()) as { email: string; permission: AgentPermission };
+    await delay(180);
+    const u = state.users.find(
+      (x) => x.email.toLowerCase() === body.email.trim().toLowerCase() && !x.disabled
+    );
+    if (!u) {
+      return new HttpResponse(JSON.stringify({ error: "User not found" }), { status: 404 });
+    }
+    if (u.role === "admin") {
+      // Admin already has implicit access
+      return HttpResponse.json({ ok: true, userId: u.id, userName: u.name });
+    }
+    const grant: AgentPermission = body.permission === "OWNER" ? "OWNER" : "VIEW";
+    if (!state.access[id]) state.access[id] = {};
+    state.access[id][u.id] = grant;
+    return HttpResponse.json({ ok: true, userId: u.id, userName: u.name });
   }),
 
   http.put("/api/v1/agents/:id/permissions", async ({ request, params }) => {

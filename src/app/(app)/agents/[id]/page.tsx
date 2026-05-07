@@ -10,7 +10,8 @@ import { t } from "@/lib/i18n";
 import { ChatPanel } from "@/components/ChatPanel";
 import { VideoGenForm } from "@/components/VideoGenForm";
 import { VideoPreviewPanel } from "@/components/VideoPreviewPanel";
-import { BookIcon, LockIcon, PlusIcon } from "@/components/icons";
+import { ShareModal } from "@/components/ShareModal";
+import { BookIcon, LockIcon, PlusIcon, ShareIcon } from "@/components/icons";
 import type { Agent } from "@/types";
 
 export default function AgentDetailPage() {
@@ -27,6 +28,7 @@ export default function AgentDetailPage() {
     | { language: "ja" | "en"; avatar: string; durationSec: number; submitting: boolean }
     | undefined
   >();
+  const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
     setActiveConvId(cidFromUrl);
@@ -41,6 +43,7 @@ export default function AgentDetailPage() {
   if (!agent) return <div className="p-8 text-sm text-[var(--text-tertiary)]">404</div>;
 
   const isOwnerOrAdmin = user?.role === "admin" || agent.ownerUserId === user?.id;
+  const isAdmin = user?.role === "admin";
 
   const examples =
     agent.kind === "ceo_chatbot"
@@ -75,6 +78,16 @@ export default function AgentDetailPage() {
                   <LockIcon /> {t("avatarPermissions", locale)}
                 </Link>
               )}
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => setShareOpen(true)}
+                  className="h-8 text-xs px-2.5 rounded-md border hover:bg-[var(--bg-muted)] flex items-center gap-1.5"
+                  style={{ borderColor: "var(--border-default)" }}
+                >
+                  <ShareIcon /> {t("share", locale)}
+                </button>
+              )}
             </div>
             <VideoGenForm
               agentId={agent.id}
@@ -90,6 +103,7 @@ export default function AgentDetailPage() {
 
         {/* Preview column (right) */}
         <VideoPreviewPanel conversationId={activeConvId} pendingPreview={pendingPreview} />
+        {shareOpen && <ShareModal agent={agent} onClose={() => setShareOpen(false)} />}
       </div>
     );
   }
@@ -120,6 +134,16 @@ export default function AgentDetailPage() {
             <BookIcon /> {t("knowledgeBase", locale)}
           </Link>
         )}
+        {isAdmin && (
+          <button
+            type="button"
+            onClick={() => setShareOpen(true)}
+            className="h-8 text-xs px-2.5 rounded-md border hover:bg-[var(--bg-muted)] flex items-center gap-1.5"
+            style={{ borderColor: "var(--border-default)" }}
+          >
+            <ShareIcon /> {t("share", locale)}
+          </button>
+        )}
       </div>
       <div className="flex-1 overflow-hidden">
         <ChatPanel
@@ -129,6 +153,7 @@ export default function AgentDetailPage() {
           autorespond={autorespond}
         />
       </div>
+      {shareOpen && <ShareModal agent={agent} onClose={() => setShareOpen(false)} />}
     </div>
   );
 }
