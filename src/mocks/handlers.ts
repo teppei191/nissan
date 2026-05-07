@@ -508,16 +508,28 @@ export const handlers = [
     return HttpResponse.json({ ok: true });
   }),
 
-  // Avatar permissions for current user (CEO Video) — used by VideoGenForm
+  // Avatars for the CEO Video Agent. Always returns the full catalog with a
+  // per-avatar `allowed` flag so the UI can grey-out unauthorized avatars
+  // instead of hiding them.
   http.get("/api/v1/agents/a-ceo-video/avatars", async ({ request }) => {
     const url = new URL(request.url);
     const userId = url.searchParams.get("userId") ?? "";
     await delay(80);
     const u = state.users.find((x) => x.id === userId);
-    if (!u) return HttpResponse.json({ avatars: [] });
-    if (u.role === "admin") return HttpResponse.json({ avatars: AVATARS });
-    const allowed = state.avatarPermissions[userId] ?? [];
-    return HttpResponse.json({ avatars: AVATARS.filter((a) => allowed.includes(a.id)) });
+    if (!u) {
+      return HttpResponse.json({
+        avatars: AVATARS.map((a) => ({ ...a, allowed: false })),
+      });
+    }
+    if (u.role === "admin") {
+      return HttpResponse.json({
+        avatars: AVATARS.map((a) => ({ ...a, allowed: true })),
+      });
+    }
+    const allowedIds = state.avatarPermissions[userId] ?? [];
+    return HttpResponse.json({
+      avatars: AVATARS.map((a) => ({ ...a, allowed: allowedIds.includes(a.id) })),
+    });
   }),
 
   // Conversations

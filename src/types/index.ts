@@ -135,6 +135,10 @@ export type AvatarOption = {
   id: string;
   label: string;
   color: string; // semantic token reference for icon background
+  // Set on the per-user avatars endpoint to indicate whether the requesting
+  // user is permitted to use this avatar. Optional because admin pages that
+  // configure permissions don't need it.
+  allowed?: boolean;
 };
 
 export type AvatarPermissions = Record<string, string[]>; // userId -> allowed avatar IDs ([] = none, undefined = all if has VIEW)

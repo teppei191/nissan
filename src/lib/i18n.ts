@@ -234,6 +234,10 @@ const DICT: Dict = {
     ja: "利用可能なアバターがありません。管理者に問い合わせてください。",
     en: "No avatars available. Please contact your admin.",
   },
+  avatarLocked: {
+    ja: "このアバターは権限が付与されていないため使用できません。",
+    en: "You don't have permission to use this avatar.",
+  },
   voiceClone: { ja: "音声クローン", en: "Voice clone" },
   generate: { ja: "生成する", en: "Generate" },
   generating: { ja: "生成中...", en: "Generating..." },

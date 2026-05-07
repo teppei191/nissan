@@ -52,8 +52,20 @@ export function VideoGenForm({
   const [cancelled, setCancelled] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
+  // Auto-select the first allowed avatar; reset selection if the currently
+  // selected avatar is no longer allowed (e.g., permission was just revoked).
   useEffect(() => {
-    if (avatars.length > 0 && !avatarId) setAvatarId(avatars[0].id);
+    const firstAllowed = avatars.find((a) => a.allowed);
+    if (!firstAllowed) {
+      if (avatarId) setAvatarId(null);
+      return;
+    }
+    const currentStillAllowed = avatars.some(
+      (a) => a.id === avatarId && a.allowed
+    );
+    if (!currentStillAllowed) {
+      setAvatarId(firstAllowed.id);
+    }
   }, [avatars, avatarId]);
 
   // Reset per-generation UI when the conversation changes (e.g., the user
@@ -68,7 +80,8 @@ export function VideoGenForm({
     setSubmitting(false);
   }, [conversationId]);
 
-  const noAvatarAccess = !avatarsQ.isLoading && avatars.length === 0;
+  const allowedAvatars = avatars.filter((a) => a.allowed);
+  const noAvatarAccess = !avatarsQ.isLoading && allowedAvatars.length === 0;
 
   function addImage(file: File) {
     setImageCues((arr) => [
@@ -97,7 +110,7 @@ export function VideoGenForm({
   async function handleGenerate() {
     if (!avatarId) return;
     const avatar = avatars.find((a) => a.id === avatarId);
-    if (!avatar) return;
+    if (!avatar || avatar.allowed !== true) return;
     setSubmitting(true);
     setCancelled(false);
     onPreview?.({ language, avatar: avatar.label, durationSec: 0, submitting: true });
@@ -246,9 +259,9 @@ export function VideoGenForm({
         <label className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">
           {t("executive", locale)}
         </label>
-        {noAvatarAccess ? (
+        {noAvatarAccess && (
           <div
-            className="text-xs px-3 py-2 rounded-md border"
+            className="text-xs px-3 py-2 rounded-md border mb-2"
             style={{
               background: "var(--orange-subtle)",
               borderColor: "var(--orange-muted)",
@@ -257,20 +270,27 @@ export function VideoGenForm({
           >
             {t("noAvatarAccess", locale)}
           </div>
-        ) : (
+        )}
+        {avatars.length > 0 && (
           <div className="grid grid-cols-3 gap-2">
             {avatars.map((a) => {
-              const selected = avatarId === a.id;
+              const allowed = a.allowed === true;
+              const selected = avatarId === a.id && allowed;
               const initials = a.label.split(/\s+/).slice(-1)[0].slice(0, 2).toUpperCase();
               const role = a.label.split(/\s+/)[0];
               return (
                 <button
                   key={a.id}
                   type="button"
-                  onClick={() => setAvatarId(a.id)}
+                  onClick={() => allowed && setAvatarId(a.id)}
+                  disabled={!allowed}
+                  aria-disabled={!allowed}
+                  title={!allowed ? t("avatarLocked", locale) : a.label}
                   className={cn(
-                    "flex flex-col items-center gap-2 px-3 py-3 rounded-lg border bg-[var(--bg-default)] transition-all",
-                    selected ? "shadow-sm" : "hover:bg-[var(--bg-subtle)]"
+                    "flex flex-col items-center gap-2 px-3 py-3 rounded-lg border bg-[var(--bg-default)] transition-all relative",
+                    !allowed && "cursor-not-allowed opacity-50",
+                    allowed && !selected && "hover:bg-[var(--bg-subtle)]",
+                    selected && "shadow-sm"
                   )}
                   style={{
                     borderColor: selected ? "var(--color-red-50)" : "var(--border-default)",
@@ -279,11 +299,25 @@ export function VideoGenForm({
                 >
                   <span
                     className="w-12 h-12 rounded-full flex items-center justify-center text-[var(--text-contrast)] text-sm font-bold"
-                    style={{ background: a.color, fontFamily: "var(--font-brand)" }}
+                    style={{
+                      background: a.color,
+                      fontFamily: "var(--font-brand)",
+                      filter: allowed ? undefined : "grayscale(0.7)",
+                    }}
                   >
                     {initials}
                   </span>
                   <span className="text-xs font-medium">{role}</span>
+                  {!allowed && (
+                    <span
+                      aria-hidden
+                      className="absolute top-1.5 right-1.5 text-2xs"
+                      style={{ color: "var(--text-tertiary)" }}
+                      title={t("avatarLocked", locale)}
+                    >
+                      🔒
+                    </span>
+                  )}
                 </button>
               );
             })}
