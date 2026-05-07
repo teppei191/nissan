@@ -447,25 +447,51 @@ export const handlers = [
     });
   }),
 
-  // Share an agent with an existing user by email (admin-only flow in Q1)
+  // Share an agent with one or more existing users by email (admin-only in Q1)
   http.post("/api/v1/agents/:id/share", async ({ request, params }) => {
     const id = String(params.id);
-    const body = (await request.json()) as { email: string; permission: AgentPermission };
+    const body = (await request.json()) as {
+      emails?: string[];
+      email?: string; // legacy single-recipient field
+      permission: AgentPermission;
+    };
     await delay(180);
-    const u = state.users.find(
-      (x) => x.email.toLowerCase() === body.email.trim().toLowerCase() && !x.disabled
-    );
-    if (!u) {
-      return new HttpResponse(JSON.stringify({ error: "User not found" }), { status: 404 });
-    }
-    if (u.role === "admin") {
-      // Admin already has implicit access
-      return HttpResponse.json({ ok: true, userId: u.id, userName: u.name });
-    }
+    const inputs = (body.emails && body.emails.length > 0
+      ? body.emails
+      : body.email
+      ? [body.email]
+      : []
+    )
+      .map((e) => e.trim())
+      .filter(Boolean);
+
     const grant: AgentPermission = body.permission === "OWNER" ? "OWNER" : "VIEW";
-    if (!state.access[id]) state.access[id] = {};
-    state.access[id][u.id] = grant;
-    return HttpResponse.json({ ok: true, userId: u.id, userName: u.name });
+    const granted: { userId: string; userName: string; email: string }[] = [];
+    const notFound: string[] = [];
+
+    for (const raw of inputs) {
+      const u = state.users.find(
+        (x) => x.email.toLowerCase() === raw.toLowerCase() && !x.disabled
+      );
+      if (!u) {
+        notFound.push(raw);
+        continue;
+      }
+      if (u.role === "admin") {
+        // Admin already has implicit access — count as success
+        granted.push({ userId: u.id, userName: u.name, email: u.email });
+        continue;
+      }
+      if (!state.access[id]) state.access[id] = {};
+      state.access[id][u.id] = grant;
+      granted.push({ userId: u.id, userName: u.name, email: u.email });
+    }
+
+    return HttpResponse.json({
+      ok: notFound.length === 0,
+      granted,
+      notFound,
+    });
   }),
 
   http.put("/api/v1/agents/:id/permissions", async ({ request, params }) => {

@@ -37,6 +37,23 @@ const DICT: Dict = {
     ja: "メールアドレスでユーザーを指定してアクセス権限を付与します。Q1 では既存ユーザーのみ対象です。",
     en: "Grant access by email. In Q1 this is limited to existing users.",
   },
+  shareDescriptionMulti: {
+    ja: "@ で名前またはメールを検索し、複数のユーザーをまとめて選択できます。Q1 は既存ユーザーのみ対象です。",
+    en: "Search by name or email with @ to add multiple recipients at once. Q1 supports existing users only.",
+  },
+  shareRecipients: { ja: "宛先", en: "Recipients" },
+  sharePickerPlaceholder: {
+    ja: "@ で名前・メールを検索",
+    en: "Type @ to search name or email",
+  },
+  sharePickerHint: {
+    ja: "Enter / Tab で候補を確定。Backspace で末尾の宛先を削除。",
+    en: "Press Enter / Tab to add the top suggestion. Backspace removes the last chip.",
+  },
+  shareNoMatches: {
+    ja: "一致するユーザーが見つかりません。",
+    en: "No matching users.",
+  },
   shareGrant: { ja: "権限を付与", en: "Grant access" },
   shareSuccess: { ja: "権限を付与しました", en: "Access granted" },
   shareEmailNotFound: {
