@@ -32,6 +32,9 @@ export default function AgentDetailPage() {
 
   useEffect(() => {
     setActiveConvId(cidFromUrl);
+    // When clicking the agent in the sidebar (cid drops), drop any video
+    // preview state so the right panel resets to its empty placeholder.
+    if (!cidFromUrl) setPendingPreview(undefined);
   }, [cidFromUrl]);
 
   const { data: agent, isLoading } = useQuery({

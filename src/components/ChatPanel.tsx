@@ -35,6 +35,17 @@ export function ChatPanel({
 
   useEffect(() => {
     setActiveConvId(conversationId);
+    // Reset in-progress UI state whenever the conversation changes (incl. when
+    // user clicks the agent in the sidebar to start a fresh chat).
+    setDraft("");
+    setFiles([]);
+    setError(null);
+    setShowVideoBlocked(false);
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+    }
+    setStreaming(false);
   }, [conversationId]);
 
   const convQ = useQuery({

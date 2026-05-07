@@ -56,6 +56,18 @@ export function VideoGenForm({
     if (avatars.length > 0 && !avatarId) setAvatarId(avatars[0].id);
   }, [avatars, avatarId]);
 
+  // Reset per-generation UI when the conversation changes (e.g., the user
+  // clicks the agent in the sidebar to start a fresh session).
+  useEffect(() => {
+    setImageCues([]);
+    setCancelled(false);
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+    }
+    setSubmitting(false);
+  }, [conversationId]);
+
   const noAvatarAccess = !avatarsQ.isLoading && avatars.length === 0;
 
   function addImage(file: File) {
